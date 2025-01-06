@@ -1,0 +1,15 @@
+This project aims to evaluate the accuracy and effectiveness of 2D and 3D image analysis techniques in characterizing porosity and permeability within Savonnières carbonate, a well-characterized oolitic limestone
+formation. The study leverages high-resolution 2D micro-CT image stacks obtained from the Digital Rocks Portal (DRP), which provide detailed insights into the internal structure of the rock samples. Reference 
+values for porosity, ranging from 22% to 41%, and permeability, spanning from 115 mD to over 2000 mD, obtained through established laboratory techniques, are available for comparison and validation. The goal of 
+this project is to investigate the relationship between porosity and permeability in Savonnières carbonate using a dataset of 11 samples generated via Monte Carlo sampling for reproducibility. Each sample's 3D 
+binary image data, representing the pore structure, is analyzed to determine both porosity and permeability. 2D porosity analysis is conducted using ImageJ Fiji, specifically the BoneJ plugin, which allows for 
+the segmentation of pore space and calculation of porosity based on area fraction. 3D porosity and permeability assessments are performed using a combination of PoreSpy and OpenPNM. PoreSpy is utilized to extract 
+the pore network structure, which is then converted into an OpenPNM network for further analysis. OpenPNM simulations, incorporating Stokes flow models, are employed to estimate permeability based on the pore network
+geometry and connectivity. The 3D pore network structure of each sample is visualized using ParaView, providing insights into the spatial distribution and connectivity of pores and throats. This visualization 
+aids in understanding the complex pore structure of Savonnières carbonate and its impact on fluid flow properties. To assess the accuracy of the porosity estimations, the values obtained from the 2D ImageJ analysis
+and the 3D OpenPNM simulations are compared against the reference values. Discrepancies between the 2D and 3D results are expected due to the inherent limitations of 2D data in capturing the full complexity of 
+3D pore networks, particularly features like interconnected microporosity within ooliths. A scoring system based on pore size distribution is also applied to both the 2D and 3D analysis methods to identify potential
+biases and inconsistencies. The scoring system evaluates the range of pore sizes present in each sample, providing a qualitative assessment of the pore structure characterization. This study hopes to contribute 
+to the understanding of the strengths and weaknesses of 2D and 3D image analysis techniques in digital rock physics. By comparing the results obtained from different methods against established reference values, 
+new insights can be gleaned into the accuracy and reliability of these techniques for characterizing porosity and permeability in complex carbonate rocks. 
+The findings of this research will have implications for various fields, including petroleum engineering, where accurate characterization of porous media is crucial for optimizing resource extraction.
