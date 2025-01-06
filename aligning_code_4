@@ -1,0 +1,52 @@
+import numpy as np
+import cv2
+from joblib import Parallel, delayed
+#numpy for numerical operations
+#cv2 for computer vision
+#joblib for parallel processing
+
+#create 3D array of size 1000x1000x1000
+Dim_size1 = np.array((1000, 1000, 1000), dtype=int)
+
+#read image from a raw file
+with open('C:/Users/XXXX/sequence_8bit-scaled.raw', 'rb') as f:
+    img_pre = np.fromfile(f, dtype=np.uint8)
+    img_pre = img_pre.reshape(Dim_size1[0], Dim_size1[1], Dim_size1[2])
+
+#set first slice as reference image for alignment
+reference_image = img_pre[0, :, :]
+
+#define the motion model
+warp_mode = cv2.MOTION_EUCLIDEAN
+
+#specify the number of iterations and the termination criteria
+number_of_iterations = 1000  #reduced number of iterations
+termination_eps = 1e-6  #eicreased termination criteria
+criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, number_of_iterations, termination_eps)
+
+#function to align a single image
+def align_image(i):
+    #extract the current slice
+    imgtest = img_pre[i, :, :]
+
+    #define the warp matrix
+    if warp_mode == cv2.MOTION_HOMOGRAPHY:
+        warp_matrix = np.eye(3, 3, dtype=np.float32)
+    else:
+        warp_matrix = np.eye(2, 3, dtype=np.float32)
+
+    #run the ECC algorithm to find the warp matrix
+    cc, warp_matrix = cv2.findTransformECC(reference_image, imgtest, warp_matrix, warp_mode, criteria)
+
+    #use warpAffine to transform the image using the warp matrix
+    aligned_image = cv2.warpAffine(imgtest, warp_matrix, (Dim_size1[1], Dim_size1[2]), flags=cv2.INTER_LINEAR + cv2.WARP_INVERSE_MAP)
+    return aligned_image
+
+#use parallel processing to align the images
+aligned_images = Parallel(n_jobs=-1)(delayed(align_image)(i) for i in range(Dim_size1[0]))
+
+#save the aligned images
+save_path = 'C:/Users/XXXX/sequence_8bit_aligned.raw'
+with open(save_path, 'wb') as f:
+    for aligned_image in aligned_images:
+        f.write(aligned_image.tobytes())
