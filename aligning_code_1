@@ -1,0 +1,34 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from skimage.registration import phase_cross_correlation
+
+# Assuming Dim_size1 is correct for the size of the images
+Dim_size1 = np.array((1000, 1000, 1000), dtype=int)
+
+# Read Image from a raw file
+with open('C:/Users/XXX/sequence_8bit-scaled.raw', 'rb') as f:
+    img_pre = np.fromfile(f, dtype=np.uint8)
+    img_pre = img_pre.reshape(Dim_size1[0], Dim_size1[1], Dim_size1[2])
+
+# Empty list to store aligned images
+aligned_images = []
+
+# Reference image for alignment
+reference_image = img_pre[0, :, :]
+
+# Loop through each slice to align the images
+for i in range(0, Dim_size1[0]):  # Start from the first slice
+    # Extract the current slice
+    imgtest = img_pre[i, :, :]
+
+    # Calculate the shift needed to align the current slice with the reference image
+    shift = phase_cross_correlation(reference_image, imgtest)[0]
+
+    # Apply the calculated shift to align the current slice
+    aligned_image = np.roll(imgtest, shift.astype(int), axis=(0, 1))
+    aligned_images.append(aligned_image)
+# now save the aligned images
+save_path = 'C:/Users/XXXX/sequence_8bit_aligned.raw'
+with open(save_path, 'wb') as f:
+    for aligned_image in aligned_images:
+        f.write(aligned_image.tobytes())
