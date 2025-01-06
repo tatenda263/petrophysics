@@ -1,0 +1,68 @@
+import numpy as np
+from random import randint, seed
+
+def generate_random_samples(raw_file, sample_size, num_samples, output_prefix, random_seed=31):
+
+  #this function reads a raw file, generates random 3D samples, and saves them as raw images.
+    #raw_file: Path to the raw file
+    #sample_size: Size of the 3D sample
+    #num_samples: Number of random samples to generate.
+    #output_prefix: Prefix for the output filenames.
+    #random_seed: Seed for the random number generator.
+  
+  #set the seed for the random number generator to be able to reproduce
+  seed(random_seed)
+
+  with open(raw_file, 'rb') as f:
+    data = np.fromfile(f, dtype=np.uint8)
+    data = data.reshape(1000, 748, 747) #coordinate form is z, x, y
+
+  #create a copy of the data for the output raw file
+  output_data = np.zeros_like(data)
+
+  #check if sample size is valid
+  if sample_size[0] > 747 or sample_size[1] > 748 or sample_size[2] > 1000:
+    raise ValueError("Sample size cannot be greater than input dimensions")
+
+  #create an empty list to store the coordinates
+  coordinates = []
+
+  #list of sample numbers that should have a value of 255
+  high_value_samples = [1, 4, 6, 10, 11, 16, 17, 20, 21, 22, 23]
+
+  for i in range(num_samples):
+    #generate random starting coordinates for the sample
+    x_min = randint(0, 747 - sample_size[0])
+    y_min = randint(0, 748 - sample_size[1])
+    z_min = randint(0, 1000 - sample_size[2])
+
+    #append the coordinates to the list
+    coordinates.append((x_min, y_min, z_min))
+
+    sample = data[x_min:x_min + sample_size[0], y_min:y_min + sample_size[1], z_min:z_min + sample_size[2]]
+    output_value = 255 if i in high_value_samples else 100
+    output_data[x_min:x_min + sample_size[0], y_min:y_min + sample_size[1], z_min:z_min + sample_size[2]] = output_value
+
+    #save the sample as a raw image
+    output_file = f"{output_prefix}_{i}.raw"
+    with open(output_file, 'wb') as f:
+      sample.tofile(f)
+
+  #save the output raw file
+  output_raw_file = f"{output_prefix}_output.raw"
+  with open(output_raw_file, 'wb') as f:
+    output_data.tofile(f)
+
+  #write the coordinates to a text file
+  with open(f"{output_prefix}_coordinates.txt", 'w') as f:
+    for coord in coordinates:
+      f.write(f"{coord}\n")
+
+# Define input and output parameters
+raw_file = "8bit_sc_aligned_cut_crop_thr.raw"   #adjust as needed
+sample_size = (350, 200, 200)                   #adjust as needed
+num_samples = 25                                #adjust as needed
+output_prefix = "sample"                        #adjust as needed
+
+generate_random_samples(raw_file, sample_size, num_samples, output_prefix)
+print(f"Generated {num_samples} random samples and saved them as raw images.")
