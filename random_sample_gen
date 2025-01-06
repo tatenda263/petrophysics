@@ -1,0 +1,40 @@
+import numpy as np
+from random import randint
+#randint generates random integers
+
+def generate_random_samples(raw_file, sample_size, num_samples, output_prefix):
+  #reads a raw file, generates random 3D samples, and saves them as raw images.
+    #raw_file: Path to the raw file 
+    #sample_size: Size of the 3D sample 
+    #num_samples: Number of random samples to generate.
+    #output_prefix: Prefix for the output filenames.
+
+  with open(raw_file, 'rb') as f:
+    data = np.fromfile(f, dtype=np.uint8)
+    data = data.reshape(1000, 1000, 1000)
+
+  #check if sample size is valid
+  if sample_size[0] > 1000 or sample_size[1] > 1000 or sample_size[2] > 1000:
+    raise ValueError("Sample size cannot be greater than input dimensions")
+
+  for i in range(num_samples):
+    #generate random starting coordinates for the sample
+    x_min = randint(0, 1000 - sample_size[0])
+    y_min = randint(0, 1000 - sample_size[1])
+    z_min = randint(0, 1000 - sample_size[2])
+
+    sample = data[x_min:x_min + sample_size[0], y_min:y_min + sample_size[1], z_min:z_min + sample_size[2]]
+
+    #save the sample as a raw image
+    output_file = f"{output_prefix}_{i}.raw"
+    with open(output_file, 'wb') as f:
+      sample.tofile(f)
+
+#define input and output parameters
+raw_file = "sequence_8bit_scaled.raw" #make sure is in same folder as code
+sample_size = (200, 200, 50)          #adjust as needed
+num_samples = 10                      #adjust as needed
+output_prefix = "sample"              #adjust as needed
+
+generate_random_samples(raw_file, sample_size, num_samples, output_prefix)
+print(f"Generated {num_samples} random samples and saved them as raw images.")
