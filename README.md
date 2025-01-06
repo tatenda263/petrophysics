@@ -1,35 +1,41 @@
-This project aims to evaluate the accuracy and effectiveness of 2D and 3D image analysis techniques in 
-characterizing porosity and permeability within Savonnières carbonate, a well-characterized oolitic 
-limestone formation. The study leverages high-resolution 2D micro-CT image stacks obtained from the
-Digital Rocks Portal (DRP), which provide detailed insights into the internal structure of the rock
-samples. Reference values for porosity, ranging from 22% to 41%, and permeability, spanning from 115
-mD to over 2000 mD, obtained through established laboratory techniques, are available for comparison
-and validation.
-The goal of this project is to investigate the relationship between porosity and permeability in
-Savonnières carbonate using a dataset of 11 samples generated via Monte Carlo sampling for
-reproducibility. Each sample's 3D binary image data, representing the pore structure, is analyzed to
-determine both porosity and permeability.
-2D porosity analysis is conducted using ImageJ Fiji, specifically the BoneJ plugin, which allows for the
-segmentation of pore space and calculation of porosity based on area fraction. 3D porosity and 
-permeability assessments are performed using a combination of PoreSpy and OpenPNM. PoreSpy is 
-utilized to extract the pore network structure, which is then converted into an OpenPNM network for
-further analysis. OpenPNM simulations, incorporating Stokes flow models, are employed to estimate 
-permeability based on the pore network geometry and connectivity.
-The 3D pore network structure of each sample is visualized using ParaView, providing insights into the
-spatial distribution and connectivity of pores and throats. This visualization aids in understanding the
-complex pore structure of Savonnières carbonate and its impact on fluid flow properties.
-To assess the accuracy of the porosity estimations, the values obtained from the 2D ImageJ analysis
-and the 3D OpenPNM simulations are compared against the reference values. Discrepancies between the
-2D and 3D results are expected due to the inherent limitations of 2D data in capturing the full 
-complexity of 3D pore networks, particularly features like interconnected microporosity within ooliths.
-A scoring system based on pore size distribution is also applied to both the 2D and 3D analysis 
-methods to identify potential biases and inconsistencies. The scoring system evaluates the range of
-pore sizes present in each sample, providing a qualitative assessment of the pore structure 
-characterization.
-This study hopes to contribute to the understanding of the strengths and weaknesses of 2D and 3D 
-image analysis techniques in digital rock physics. By comparing the results obtained from 
-different methods against established reference values, new insights can be gleaned into the 
-accuracy and reliability of these techniques for characterizing porosity and permeability in 
-complex carbonate rocks. The findings of this research will have implications for various fields,
-including petroleum engineering, where accurate characterization of porous media is crucial for 
-optimizing resource extraction.
+This was my term project in my Introduction to Digital Rock Petrophysics course.
+For this project I used the Savonnières carbonate dataset from the Digital Rocks Portal:
+https://www.digitalrocksportal.org/projects/72
+The original image stack is shown below:
+![image](https://github.com/user-attachments/assets/7174f098-4a48-4f7d-833a-198e552773f3)
+
+The slices in the image stack were then aligned using the Enhanced Correlation Coefficient algorithm (RAW Alignment Code 2). 
+Prior attempts using phase correlation yielded unsatisfactory results.
+Parallel processing was used to improve the speed of the process.
+The image was also scaled down by a factor of half.
+Resulting stack is shown below:
+![image](https://github.com/user-attachments/assets/30b41282-fd97-4da5-9664-9a75a005b67a)
+
+The scaled and aligned image stack was then cropped using Fiji-ImageJ:
+![image](https://github.com/user-attachments/assets/2e06af59-b987-49d1-92e8-5d32e36aa430)
+
+Auto Otsu method within ImageJ was then used to threshold the image. Pores were given voxel values of 0 and minerals 255.
+The final scaled, aligned, and thresholded image stack is shown below:
+![image](https://github.com/user-attachments/assets/8c016561-35e1-49a5-b25d-5e4d9e1f2236)
+![image](https://github.com/user-attachments/assets/f7159a1e-259e-4662-b97a-57ea9f6bd939)
+![image](https://github.com/user-attachments/assets/1e0bbbac-9990-4a20-a09c-92d38a10005a)
+
+Monte Carlo sampling was then used to generate random cuboid 3D samples from the image stack.
+This was to enable me to calculate certain petrophysical parameters that required cuboid 3D images.
+
+I used a random sample generator with a fixed seed.
+For each seed I tried I manually went through the samples and determined which of the samples were
+"high-value" i.e. did not touch the edge of the original image stack and did not include the 
+outside of the image stack.
+
+The code used for their generation is "random_sample_gen2" with the parameters I used to generate the random samples.
+The number of high-value samples versus seed number is outlined in "good samples.txt"
+25 samples were generated and the 11 samples chosen are shown in the table below:
+![image](https://github.com/user-attachments/assets/4edc8c17-afb6-4a1b-974d-e2e052b0c16c)
+
+In 3D, the 25 samples generated are shown below:
+![image](https://github.com/user-attachments/assets/a9e7a156-a1a3-436b-861c-f80f2c6fc1cc)
+The high-value samples selected are shown in red:
+![image](https://github.com/user-attachments/assets/c9fe1701-81a5-492e-9117-998eb9ddc9b4)
+
+These were then used to calculate the petrophysical properties of the Savonnières carbonate.
