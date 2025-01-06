@@ -1,0 +1,34 @@
+import numpy as np
+import tifffile as tiff
+from skimage.registration import phase_cross_correlation
+
+# Specify the path to your TIFF file
+image_file = "C:/Users/XXXX/sequence.tif"
+
+#read the TIFF image
+img_pre = tiff.imread(image_file)
+
+#empty list to store aligned images
+aligned_images = []
+
+#reference image for alignment
+reference_image = img_pre[0, :, :]
+
+#loop through each slice to align the images
+for i in range(len(img_pre)):  # Use len(img_pre) for actual number of slices
+  # Extract the current slice
+  imgtest = img_pre[i, :, :]
+
+  # Calculate the shift needed to align the current slice with the reference image
+  shift, _, _ = phase_cross_correlation(reference_image, imgtest)
+
+  # Apply the calculated shift to align the current slice
+  aligned_image = np.roll(imgtest, -shift.round().astype(int), axis=(0, 1))
+  aligned_images.append(aligned_image)
+
+# Specify the path to save the aligned TIFF file
+save_path = "C:/Users/XXXX/sequence_aligned.tif"
+
+# Save the aligned images
+tiff.imsave(save_path, np.array(aligned_images, dtype='uint16'))
+print(f"Aligned images saved to {save_path}")
