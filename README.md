@@ -5,8 +5,8 @@ The original image stack is shown below:
 
 ![image](https://github.com/user-attachments/assets/7174f098-4a48-4f7d-833a-198e552773f3)
 
-The slices in the image stack were then aligned using the Enhanced Correlation Coefficient algorithm (RAW Alignment Code 2). 
-Prior attempts using phase correlation yielded unsatisfactory results.
+The slices in the image stack were then aligned using the Enhanced Correlation Coefficient algorithm (_aligning_code_4_). 
+Prior attempts using phase correlation (_aligning_code_1,2,3_) yielded unsatisfactory results regardless of format.
 Parallel processing was used to improve the speed of the process.
 The image was also scaled down by a factor of half.
 Resulting stack is shown below:
@@ -16,9 +16,9 @@ Resulting stack is shown below:
 The scaled and aligned image stack was then cropped using Fiji-ImageJ:
 ![image](https://github.com/user-attachments/assets/2e06af59-b987-49d1-92e8-5d32e36aa430)
 
-Auto Otsu method within ImageJ was then used to threshold the image. Pores were given voxel values of 0 and minerals 255.
+Otsu method within Fiji-ImageJ was then used to threshold the image. Pores were given voxel values of 0 and minerals 255.
 The final scaled, aligned, and thresholded image stack is shown below. 
-The 2D image stack and white 3D representation were generated using ImagteJ Fiji. 
+The 2D image stack and white 3D representation were generated using Fiji-ImageJ. 
 The coloured 3D model was generated using Paraview.
 
 ![image](https://github.com/user-attachments/assets/8c016561-35e1-49a5-b25d-5e4d9e1f2236)
@@ -26,15 +26,16 @@ The coloured 3D model was generated using Paraview.
 ![image](https://github.com/user-attachments/assets/1e0bbbac-9990-4a20-a09c-92d38a10005a)
 
 Monte Carlo sampling was then used to generate random cuboid 3D samples from the image stack.
-This was to enable me to calculate certain petrophysical parameters that required cuboid 3D images.
+This was to enable the calculation of certain petrophysical parameters that required cuboid 3D images.
 
 I used a random sample generator with a fixed seed.
 For each seed I tried I manually went through the samples and determined which of the samples were
 "high-value" i.e. did not touch the edge of the original image stack and did not include the 
 outside of the image stack.
 
-The code used for their generation is "random_sample_gen2" with the parameters I used to generate the random samples.
-The number of high-value samples versus seed number is outlined in "good samples.txt"
+The code used for their generation is "_random_sample_gen2_"
+The parameters I used to generate the random samples is in the code.
+The number of high-value samples versus seed number is outlined in "_good samples.txt_"
 25 samples were generated and the 11 samples chosen are shown in the table below:
 
 ![image](https://github.com/user-attachments/assets/4edc8c17-afb6-4a1b-974d-e2e052b0c16c)
