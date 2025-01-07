@@ -17,11 +17,11 @@ with open('C:/Users/XXXX/sequence_8bit-scaled.raw', 'rb') as f:
 reference_image = img_pre[0, :, :]
 
 #define the motion model
-warp_mode = cv2.MOTION_EUCLIDEAN
+warp_mode = cv2.MOTION_EUCLIDEAN    #images will only be allowed to be shifted and rotated, not stretched or skewed
 
 #specify the number of iterations and the termination criteria
-number_of_iterations = 1000  #reduced number of iterations
-termination_eps = 1e-6  #eicreased termination criteria
+number_of_iterations = 1000  #maximum number of times code will try to align the images
+termination_eps = 1e-6  #amount of changes between iterations
 criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, number_of_iterations, termination_eps)
 
 #function to align a single image
@@ -30,19 +30,31 @@ def align_image(i):
     imgtest = img_pre[i, :, :]
 
     #define the warp matrix
-    if warp_mode == cv2.MOTION_HOMOGRAPHY:
+    if warp_mode == cv2.MOTION_HOMOGRAPHY:             #if homography motion model is chosen
         warp_matrix = np.eye(3, 3, dtype=np.float32)
     else:
-        warp_matrix = np.eye(2, 3, dtype=np.float32)
+        warp_matrix = np.eye(2, 3, dtype=np.float32)   
+    #2x3 matrix chosen for Euclidean [a b tx; c d ty]
+    #first two columns abcd of warp matrix handle rotation
+    #third column txty of warp matrix handles translation
 
+    #find best way to move and rotate current slice to match reference image
     #run the ECC algorithm to find the warp matrix
+    #update warp matrix at each run
     cc, warp_matrix = cv2.findTransformECC(reference_image, imgtest, warp_matrix, warp_mode, criteria)
 
     #use warpAffine to transform the image using the warp matrix
+    #applies warp matrix to each pixel in slice
+    #inter_linear to determine new pixel value using interpolation
+    #inter_linear uses weighted average of four nearest pixels
+    #inverse_map tells function to use inverse of warp matrix
+    #this is so that output image can be mapped to input image coordinates
     aligned_image = cv2.warpAffine(imgtest, warp_matrix, (Dim_size1[1], Dim_size1[2]), flags=cv2.INTER_LINEAR + cv2.WARP_INVERSE_MAP)
     return aligned_image
 
 #use parallel processing to align the images
+#n_jobs=1 means use all cores
+#multiple slices aligned at once rather than one slice at a time
 aligned_images = Parallel(n_jobs=-1)(delayed(align_image)(i) for i in range(Dim_size1[0]))
 
 #save the aligned images
