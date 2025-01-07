@@ -17,7 +17,9 @@ The scaled and aligned image stack was then cropped using Fiji-ImageJ:
 ![image](https://github.com/user-attachments/assets/2e06af59-b987-49d1-92e8-5d32e36aa430)
 
 Auto Otsu method within ImageJ was then used to threshold the image. Pores were given voxel values of 0 and minerals 255.
-The final scaled, aligned, and thresholded image stack is shown below:
+The final scaled, aligned, and thresholded image stack is shown below. 
+The 2D image stack and white 3D representation were generated using ImagteJ Fiji. 
+The coloured 3D model was generated using Paraview.
 
 ![image](https://github.com/user-attachments/assets/8c016561-35e1-49a5-b25d-5e4d9e1f2236)
 ![image](https://github.com/user-attachments/assets/f7159a1e-259e-4662-b97a-57ea9f6bd939)
@@ -37,7 +39,7 @@ The number of high-value samples versus seed number is outlined in "good samples
 
 ![image](https://github.com/user-attachments/assets/4edc8c17-afb6-4a1b-974d-e2e052b0c16c)
 
-In 3D, the 25 samples generated are shown below:
+Paraview was then used to view the 25 samples generated in 3D as shown below:
 
 ![image](https://github.com/user-attachments/assets/a9e7a156-a1a3-436b-861c-f80f2c6fc1cc)
 
