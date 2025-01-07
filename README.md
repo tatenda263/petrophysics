@@ -1,4 +1,4 @@
-This was my term project in my Introduction to Digital Rock Petrophysics course.
+This was my term project in the Introduction to Digital Rock Petrophysics course.
 For this project I used the Savonnières carbonate dataset from the Digital Rocks Portal:
 https://www.digitalrocksportal.org/projects/72
 The original image stack is shown below:
